@@ -43,6 +43,7 @@ const GAME_CONFIG = {
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameLoopRef = useRef<number>();
+  const gooseImageRef = useRef<HTMLImageElement | null>(null);
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameOver'>('menu');
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(() => {
@@ -124,21 +125,31 @@ function App() {
       ctx.restore();
     }
 
-    // Draw goose emoji
-    ctx.font = `${goose.width}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    if (goose.isShielded) {
-      // Add golden glow effect when shielded
-      ctx.shadowColor = '#FFD700';
-      ctx.shadowBlur = 10;
-    }
-    
-    ctx.fillText('🪿', goose.x + goose.width/2, goose.y + goose.height/2);
-    
-    if (goose.isShielded) {
-      ctx.shadowBlur = 0;
+    // Draw goose GIF
+    if (gooseImageRef.current) {
+      if (goose.isShielded) {
+        // Add golden glow effect when shielded
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 10;
+      }
+      
+      ctx.drawImage(
+        gooseImageRef.current,
+        goose.x,
+        goose.y,
+        goose.width,
+        goose.height
+      );
+      
+      if (goose.isShielded) {
+        ctx.shadowBlur = 0;
+      }
+    } else {
+      // Fallback to emoji if image not loaded
+      ctx.font = `${goose.width}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🦆', goose.x + goose.width/2, goose.y + goose.height/2);
     }
   }, []);
 
@@ -472,7 +483,17 @@ function App() {
         
         {gameState === 'menu' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 rounded-lg">
-            <div className="text-6xl mb-4">🦆</div>
+            <div className="mb-4">
+              {gooseImageRef.current ? (
+                <img 
+                  src="/public/goose_1fabf (1).gif" 
+                  alt="Goose" 
+                  className="w-16 h-16 object-contain"
+                />
+              ) : (
+                <div className="text-6xl">🦆</div>
+              )}
+            </div>
             <h1 className="text-4xl font-bold mb-4 text-gray-800">Goose Runner</h1>
             <p className="text-lg mb-6 text-center max-w-md text-gray-600">
               Help the goose escape! Jump over cameras, farmers, and books. 
