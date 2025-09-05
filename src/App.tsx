@@ -51,6 +51,15 @@ function App() {
     return saved ? parseInt(saved, 10) : 0;
   });
 
+  // Load goose GIF
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/goose_1fabf (1).gif';
+    img.onload = () => {
+      gooseImageRef.current = img;
+    };
+  }, []);
+
   // Game objects
   const gooseRef = useRef({
     x: 100,
@@ -125,14 +134,17 @@ function App() {
       ctx.restore();
     }
 
-    // Draw goose GIF
+    // Draw goose - prioritize GIF over emoji
     if (gooseImageRef.current) {
+      // Add golden glow effect when shielded
       if (goose.isShielded) {
-        // Add golden glow effect when shielded
+        ctx.save();
         ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
       }
-      
+
       ctx.drawImage(
         gooseImageRef.current,
         goose.x,
@@ -140,16 +152,16 @@ function App() {
         goose.width,
         goose.height
       );
-      
+
       if (goose.isShielded) {
-        ctx.shadowBlur = 0;
+        ctx.restore();
       }
     } else {
-      // Fallback to emoji if image not loaded
+      // Fallback to goose emoji if GIF not loaded
       ctx.font = `${goose.width}px Arial`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🦆', goose.x + goose.width/2, goose.y + goose.height/2);
+      ctx.fillText('🪿', goose.x + goose.width/2, goose.y + goose.height/2);
     }
   }, []);
 
@@ -486,12 +498,12 @@ function App() {
             <div className="mb-4">
               {gooseImageRef.current ? (
                 <img 
-                  src="/public/goose_1fabf (1).gif" 
+                  src="/goose_1fabf (1).gif" 
                   alt="Goose" 
                   className="w-16 h-16 object-contain"
                 />
               ) : (
-                <div className="text-6xl">🦆</div>
+                <div className="text-6xl">🪿</div>
               )}
             </div>
             <h1 className="text-4xl font-bold mb-4 text-gray-800">Goose Runner</h1>
