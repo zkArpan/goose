@@ -54,7 +54,7 @@ function App() {
   // Load goose GIF
   useEffect(() => {
     const img = new Image();
-    img.src = '/goose_1fabf (1).gif';
+    img.src = '/goose_1fabf%20(1).gif';
     img.onload = () => {
       gooseImageRef.current = img;
     };
@@ -134,7 +134,7 @@ function App() {
       ctx.restore();
     }
 
-    // Draw goose emoji flipped to face right
+    // Draw goose GIF flipped to face right
     ctx.save();
     
     // Add golden glow effect when shielded
@@ -145,12 +145,25 @@ function App() {
       ctx.shadowOffsetY = 0;
     }
     
-    // Flip horizontally to face right
+    // Flip horizontally so goose faces right
     ctx.scale(-1, 1);
-    ctx.font = `${goose.width}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('🪿', -(goose.x + goose.width/2), goose.y + goose.height/2);
+    
+    if (gooseImageRef.current) {
+      // Draw the flipped GIF
+      ctx.drawImage(
+        gooseImageRef.current,
+        -(goose.x + goose.width), // Negative x because of flip
+        goose.y,
+        goose.width,
+        goose.height
+      );
+    } else {
+      // Fallback to emoji if GIF not loaded
+      ctx.font = `${goose.width}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🪿', -(goose.x + goose.width/2), goose.y + goose.height/2);
+    }
     
     ctx.restore();
   }, []);
@@ -486,7 +499,16 @@ function App() {
         {gameState === 'menu' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 rounded-lg">
             <div className="mb-4">
-              <div className="text-6xl" style={{ transform: 'scaleX(-1)' }}>🪿</div>
+              {gooseImageRef.current ? (
+                <img 
+                  src="/goose_1fabf%20(1).gif" 
+                  alt="Goose" 
+                  className="w-16 h-16"
+                  style={{ transform: 'scaleX(-1)' }}
+                />
+              ) : (
+                <div className="text-6xl" style={{ transform: 'scaleX(-1)' }}>🪿</div>
+              )}
             </div>
             <h1 className="text-4xl font-bold mb-4 text-gray-800">Goose Runner</h1>
             <p className="text-lg mb-6 text-center max-w-md text-gray-600">
