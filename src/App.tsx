@@ -472,7 +472,7 @@ function App() {
         
         {gameState === 'menu' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 rounded-lg">
-            <div className="text-6xl mb-4">🪿</div>
+            <div className="text-6xl mb-4">🦆</div>
             <h1 className="text-4xl font-bold mb-4 text-gray-800">Goose Runner</h1>
             <p className="text-lg mb-6 text-center max-w-md text-gray-600">
               Help the goose escape! Jump over cameras, farmers, and books. 
