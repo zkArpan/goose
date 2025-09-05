@@ -134,35 +134,25 @@ function App() {
       ctx.restore();
     }
 
-    // Draw goose - prioritize GIF over emoji
-    if (gooseImageRef.current) {
-      // Add golden glow effect when shielded
-      if (goose.isShielded) {
-        ctx.save();
-        ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 15;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-      }
-
-      ctx.drawImage(
-        gooseImageRef.current,
-        goose.x,
-        goose.y,
-        goose.width,
-        goose.height
-      );
-
-      if (goose.isShielded) {
-        ctx.restore();
-      }
-    } else {
-      // Fallback to goose emoji if GIF not loaded
-      ctx.font = `${goose.width}px Arial`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🪿', goose.x + goose.width/2, goose.y + goose.height/2);
+    // Draw goose emoji flipped to face right
+    ctx.save();
+    
+    // Add golden glow effect when shielded
+    if (goose.isShielded) {
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
     }
+    
+    // Flip horizontally to face right
+    ctx.scale(-1, 1);
+    ctx.font = `${goose.width}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🪿', -(goose.x + goose.width/2), goose.y + goose.height/2);
+    
+    ctx.restore();
   }, []);
 
   const drawObstacle = useCallback((ctx: CanvasRenderingContext2D, obstacle: Obstacle) => {
@@ -496,15 +486,7 @@ function App() {
         {gameState === 'menu' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 rounded-lg">
             <div className="mb-4">
-              {gooseImageRef.current ? (
-                <img 
-                  src="/goose_1fabf (1).gif" 
-                  alt="Goose" 
-                  className="w-16 h-16 object-contain"
-                />
-              ) : (
-                <div className="text-6xl">🪿</div>
-              )}
+              <div className="text-6xl" style={{ transform: 'scaleX(-1)' }}>🪿</div>
             </div>
             <h1 className="text-4xl font-bold mb-4 text-gray-800">Goose Runner</h1>
             <p className="text-lg mb-6 text-center max-w-md text-gray-600">
