@@ -487,7 +487,7 @@ function App() {
   }, [gameState, gameLoop]);
 
   return (
-    <div className="min-h-screen bg-gray-100 bg-opacity-95 flex flex-col items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 relative">
       <div className="relative">
         <canvas
           ref={canvasRef}
